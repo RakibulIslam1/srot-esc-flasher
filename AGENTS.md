@@ -99,3 +99,39 @@ it rebuilds the PIO drivers), `RPM_MAX`, `RPM_FF_A` (keep ≈ `1/RPM_MAX`).
 Mechanical RPM = `eRPM / THR_POLE_PAIRS`. A wrong pole count makes every RPM reading off by a
 fixed ratio — and because the loop *targets* RPM, it will confidently hold the wrong speed.
 Changing it needs a Pico reflash, not a parameter.
+
+---
+
+## ⛔ Repo ownership — who may commit where
+
+This is a hard rule, not a convention. It exists because two agents work these repos in
+parallel and a direct push into the other's repo destroys the review step that catches
+cross-repo sign, units and contract errors — which is the failure mode this whole system
+keeps producing.
+
+**We own, and commit directly to:**
+
+| Repo | What |
+|---|---|
+| `srot-control-board` | the board firmware, "Hengla" |
+| `srot-ground-station` | the LoRa bridge **and Bondor** |
+| `srot-esc-flasher` | the 4-way ESC tool |
+
+**We NEVER commit to `duburi_ws`.** Not to `main`, not to `srot`, not "just a doc fix".
+Every change we need on the companion side goes in as a **pull request** against their
+branch, and they decide. That includes the mirrored constants in `fc/srot_protocol.py`
+even though we are the source of truth for the values — being the authority on a number
+is not the same as having write access to their tree.
+
+**And the reverse.** If `duburi_ws` needs something changed in the firmware, in Bondor or
+in the ESC flasher, they open a **pull request here**. They should not push directly, and
+we should not ask them to.
+
+Why it is worth the friction: a PR makes a cross-repo change *reviewable by the side that
+owns the consequences*. Several defects in this system's history — the `MOVE_STOP` brake
+double-applying, `SERVOn_FUNCTION` landing on both sides at once, a mirrored constant
+drifting — were only catchable by the other side reading the change before it shipped.
+Direct pushes remove exactly that check.
+
+Practically: `gh pr create --repo <theirs> --base <their branch> --head <your fork>:<branch>`,
+and say plainly in the PR what you could **not** verify from your side.
