@@ -92,7 +92,7 @@ static void sendAndDump(uint8_t *frame, uint16_t len, bool crc, uint16_t wait_ms
   selectEsc(0);   // GP16
   SendESC(frame, len, crc);
   uint8_t rx[300];
-  uint16_t n = GetESC(rx, wait_ms);
+  uint16_t n = GetESCInto(rx, wait_ms);   // cap was the implicit 250 on a 300-byte buffer
   Serial.printf("Sent %u bytes, got %u bytes back:", len, n);
   for (uint16_t i = 0; i < n; i++) Serial.printf(" %02X", rx[i]);
   Serial.println(n == 0 ? "  (nothing)" : "");

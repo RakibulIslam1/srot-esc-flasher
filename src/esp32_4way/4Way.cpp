@@ -119,7 +119,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
       // and polling-only, so anything the ESC sends while we sleep is lost forever.
       // The wait is expressed as GetESC's first-byte timeout instead.
       // read Answer Format = BootMsg("471c") SIGNATURE_001, SIGNATURE_002, BootVersion, BootPages (,ACK = brSUCCESS = 0x30)
-      RX_Size = GetESC(RX_Buf, 250);
+      RX_Size = GetESCInto(RX_Buf, 250);
 #ifdef _DEBUG_
       Serial.print("ESC Received: ");
       Serial.print(RX_Size);
@@ -208,7 +208,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
         delay(30);
         // Keine Antwort vom ESC -> trotzdem serial leeren
         uint8_t RX_Buf[5] = {0};
-        RX_Size = GetESC(RX_Buf, 50, sizeof(RX_Buf));   // cap = buffer size, or it overflows
+        RX_Size = GetESCInto(RX_Buf, 50);   // cap = sizeof(RX_Buf), supplied by the compiler
       }
       else {
         ack_out = ACK_D_GENERAL_ERROR;
@@ -238,7 +238,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
     uint16_t RX_Size = 0;
     uint8_t RX_Buf[250] = {0};
     RX_Size = SendESC(ESC_data, Data_Size);
-    RX_Size = GetESC(RX_Buf, 20);   // no delay() first — see cmd_DeviceInitFlash
+    RX_Size = GetESCInto(RX_Buf, 20);   // no delay() first — see cmd_DeviceInitFlash
 #ifdef _DEBUG_
     Serial.print("ESC Received: ");
     Serial.print(RX_Size);
@@ -265,7 +265,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
     uint8_t RX_Buf[300] = {0};
     uint16_t esc_rx_crc = 0;
     RX_Size = SendESC(ESC_data, Data_Size);
-    RX_Size = GetESC(RX_Buf, 20);   // no delay() first — see cmd_DeviceInitFlash
+    RX_Size = GetESCInto(RX_Buf, 20);   // no delay() first — see cmd_DeviceInitFlash
 #ifdef _DEBUG_
     Serial.print("Set Adress -> ESC Received: ");
     Serial.print(RX_Size);
@@ -441,7 +441,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
     uint16_t RX_Size = 0;
     uint8_t RX_Buf[250] = {0};
     RX_Size = SendESC(ESC_data, Data_Size);
-    RX_Size = GetESC(RX_Buf, 20);   // no delay() first — see cmd_DeviceInitFlash
+    RX_Size = GetESCInto(RX_Buf, 20);   // no delay() first — see cmd_DeviceInitFlash
 #ifdef _DEBUG_
     Serial.print("ESC Received: ");
     Serial.print(RX_Size);
@@ -463,7 +463,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
     RX_Size = SendESC(ESC_data, Data_Size);
     // Erase is slow (typically ~30 ms). Betaflight allows up to 3 s, but esc-configurator
     // gives the whole 4-way command only 1 s, so cap the wait well inside that.
-    RX_Size = GetESC(RX_Buf, 600);
+    RX_Size = GetESCInto(RX_Buf, 600);
 #ifdef _DEBUG_
     Serial.print("ESC Received: ");
     Serial.print(RX_Size);
@@ -490,7 +490,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
     uint16_t RX_Size = 0;
     uint8_t RX_Buf[250] = {0};
     RX_Size = SendESC(ESC_data, Data_Size);
-    RX_Size = GetESC(RX_Buf, 20);   // no delay() first — see cmd_DeviceInitFlash
+    RX_Size = GetESCInto(RX_Buf, 20);   // no delay() first — see cmd_DeviceInitFlash
 #ifdef _DEBUG_
     Serial.print("ESC Received: ");
     Serial.print(RX_Size);
@@ -519,7 +519,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
 
     // sende Buffer data
     RX_Size = SendESC(ParamBuf, I_Param_Len);
-    RX_Size = GetESC(RX_Buf, 150);   // no delay() first — see cmd_DeviceInitFlash
+    RX_Size = GetESCInto(RX_Buf, 150);   // no delay() first — see cmd_DeviceInitFlash
 #ifdef _DEBUG_
     Serial.print("ESC Received: ");
     Serial.print(RX_Size);
@@ -541,7 +541,7 @@ uint16_t Check_4Way(uint8_t buf[]) {
     RX_Size = SendESC(ESC_data, Data_Size);
     // brSUCCESS wird nicht sofort gesendet — flash programming takes a while, so wait
     // for it via the timeout rather than delay()ing through the reply.
-    RX_Size = GetESC(RX_Buf, 600);
+    RX_Size = GetESCInto(RX_Buf, 600);
 #ifdef _DEBUG_
     Serial.print("ESC Received: ");
     Serial.print(RX_Size);
